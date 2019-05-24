@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 引入jdbc.properties -->
+	<context:property-placeholder location="classpath:properties/jdbc.properties"/>
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="jdbcUrl" value="${jdbc.url}"/>
+		<property name="driverClass" value="${jdbc.driverClass}"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+	
+	<!-- 整合hibernate -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<!-- 配置数据源 -->
+		<property name="dataSource" ref="dataSource"/>
+		
+		<!-- 配置hibernate相关属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<!-- 方言 -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<!-- 打印sql -->
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- 格式化sql -->
+				<prop key="hibernate.format_ql">true</prop>
+				<!-- 更新 -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		
+		<!-- 引入映射文件 -->
+	    <property name="mappingResources">
+			 <list>
+			 	<value>com/dhr/domain/User.hbm.xml</value>
+			 	<value>com/dhr/domain/Customer.hbm.xml</value>
+			 	<value>com/dhr/domain/BaseDict.hbm.xml</value>
+			 	<value>com/dhr/domain/LinkMan.hbm.xml</value>
+			 	<value>com/dhr/domain/SaleVisit.hbm.xml</value>
+			 </list>
+		</property>
+	</bean>
+	
+	<!-- 配置所有的dao -->
+	<bean id="userDao" class="com.dhr.dao.impl.UserDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="customerDao" class="com.dhr.dao.impl.CustomerDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="baseDictDao" class="com.dhr.dao.impl.BaseDictDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="linkManDao" class="com.dhr.dao.impl.LinkManDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="saleDao" class="com.dhr.dao.impl.SaleVisitDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+</beans>

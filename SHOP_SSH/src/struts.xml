@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<!-- 配置struts -->
+<struts>
+	<package name="shop" extends="struts-default" namespace="/">
+		<!-- 配置权限拦截器 -->
+		<interceptors>
+			<interceptor name="PrivilegeIntercetor" class="com.dhr.intercepter.PrivilegeIntercetor"/>
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="defaultStack"/>
+				<interceptor-ref name="PrivilegeIntercetor"/>
+			</interceptor-stack>
+		</interceptors>
+		<!-- 配置全局跳转 -->
+		<global-results>
+			<result name="msg">/WEB-INF/jsp/msg.jsp</result>
+			<result name="loginError">/admin/index.jsp</result>
+		</global-results>
+		<!-- 配置跳往首页action -->
+		<action name="index" class="indexAction">
+			<result name="index">/WEB-INF/jsp/index.jsp</result>
+		</action>
+	
+		<!-- 配置跳往注册页的action -->
+		<action name="user_*" class="userAction" method="{1}">
+			<result name="toRegister">/WEB-INF/jsp/register.jsp</result>
+			<result name="input">/WEB-INF/jsp/register.jsp</result>
+			<result name="login">/WEB-INF/jsp/login.jsp</result>
+			<result name="loginSuccess" type="redirectAction">index</result>
+			<result name="registerError">/WEB-INF/jsp/register.jsp</result>
+			<result name="loginError">/WEB-INF/jsp/login.jsp</result>
+			<result name="quit" type="redirectAction">index</result>
+		</action>
+	
+		<!-- 配置验证码action -->
+		<action name="check" class="checkAction" method=""></action>
+		
+		<!-- 配置商品action -->
+		<action name="product_*" class="productAction" method="{1}">
+			<result name="info">/WEB-INF/jsp/product.jsp</result>
+			<result name="pageInfo">/WEB-INF/jsp/product_list.jsp</result>
+		</action>
+		
+		<!-- 配置购物车action -->
+		<action name="cart_*" class="cartAction" method="{1}">
+			<result name="cartInfo">/WEB-INF/jsp/cart.jsp</result>
+			<result name="loginError">/admin/index.jsp</result>
+		</action>
+		
+		<!-- 配置订单action -->
+		<action name="order_*" class="orderAction" method="{1}">
+			<result name="orderInfo">/WEB-INF/jsp/order.jsp</result>
+			<result name="orderList">/WEB-INF/jsp/orderList.jsp</result>
+			<result name="pay">/WEB-INF/jsp/msg.jsp</result>
+			<result name="sureOrder">order_myOrder.action?pageNumber=1</result>
+		</action>
+		
+		<!-- 配置管理员action -->
+		<action name="admin_*" class="adminAction" method="{1}">
+			<result name="loginPage">/admin/index.jsp</result>
+			<result name="loginSuccess" type="redirect">/admin/home.jsp</result>
+		</action>
+		
+		<!-- 配置管理员管理一级分类action -->
+		<action name="adminCategory_*" class="adminCategoryAction" method="{1}">
+			<result name="findAllCategory">/admin/category/list.jsp</result>
+			<result name="saveSuccess" type="redirectAction">adminCategory_findAllCategory</result>
+			<result name="delSuccess" type="redirectAction">adminCategory_findAllCategory</result>
+			<result name="toedit">/admin/category/edit.jsp</result>
+			<result name="updateCategory" type="redirectAction">adminCategory_findAllCategory</result>
+			<!-- 引入拦截器 -->
+			<interceptor-ref name="myStack"/>
+		</action>
+		
+		<!-- 配置管理员管理二级分类action -->
+		<action name="adminCategorySecond_*" class="adminCategorySecondAction" method="{1}">
+			<result name="findAllPage">/admin/categorysecond/list.jsp</result>
+			<result name="toCategorySecond">/admin/categorysecond/add.jsp</result>
+			<result name="addSuccess" type="redirectAction">adminCategorySecond_findAllPage.action?pageNumber=1</result>
+			<result name="delSuccess" type="redirectAction">adminCategorySecond_findAllPage.action?pageNumber=1</result>
+			<result name="toEdit">/admin/categorysecond/edit.jsp</result>
+			<result name="updateSuccess" type="redirectAction">adminCategorySecond_findAllPage.action?pageNumber=1</result>
+			<!-- 引入拦截器 -->
+			<interceptor-ref name="myStack"/>
+		</action>
+		
+		<!-- 配置管理员管理商品action -->
+		<action name="adminProduct_*" class="adminProductAction" method="{1}">
+			<result name="pageProduct">/admin/product/list.jsp</result>
+			<result name="toaddProduct">/admin/product/add.jsp</result>
+			<result name="uploadProduct" type="redirectAction">adminProduct_findPageProduct.action?pageNumber=1</result>
+			<result name="toUpdateProduct">/admin/product/edit.jsp</result>
+			<result name="updateProduct" type="redirectAction">adminProduct_findPageProduct.action?pageNumber=1</result>
+			<result name="delProduct" type="redirectAction">adminProduct_findPageProduct.action?pageNumber=1</result>
+			<!-- 引入拦截器 -->
+			<interceptor-ref name="myStack"/>
+		</action>
+		
+		<!-- 配置管理员管理订单action -->
+		<action name="adminOrder_*" class="adminOrderAction" method="{1}">
+			<result name="pageOrder">/admin/order/list.jsp</result>
+			<result name="findOrderItems">/admin/order/orderItem.jsp</result>
+			<result name="goGoods">adminOrder_findAllOrder.action?pageNumber=1</result>
+			<result name="nopay">/admin/order/order_state.jsp</result>
+			<result name="yespay">/admin/order/order_state.jsp</result>
+			<result name="sendGoods">/admin/order/order_state.jsp</result>
+			<result name="orderSuccess">/admin/order/order_state.jsp</result>
+			<!-- 引入拦截器 -->
+			<interceptor-ref name="myStack"/>
+		</action>
+	</package>
+	
+
+</struts>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- 配置映射 -->
+<hibernate-mapping>
+	<class name="com.dhr.domain.Category" table="category" >
+		<!-- 配置ID -->
+		<id column="cid" name="cid">
+			<generator class="native"/>
+		</id>
+		
+		<property name="cname"/>
+		
+		<!-- 配置多的一方集合 -->
+		<set name="categorySecond" order-by="csid" cascade="delete"  lazy="false">
+			<key column="cid"/>
+			<one-to-many class="com.dhr.domain.CategorySecond"/>
+		</set>
+	</class>
+</hibernate-mapping>

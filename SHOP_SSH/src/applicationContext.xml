@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 引入外部文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties"/>
+	<!-- 配置连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driverClass}"/>
+		<property name="jdbcUrl" value="${jdbc.url}"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+	<!-- hibernate配置信息 -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<!-- 注入连接池 -->
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 配置hibernate其他属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hiberntae.format_sql">true</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<!-- 引入orm映射 -->
+		<property name="mappingResources">
+			<list>
+				<value>com/dhr/domain/User.hbm.xml</value>
+				<value>com/dhr/domain/Category.hbm.xml</value>
+				<value>com/dhr/domain/Product.hbm.xml</value>
+				<value>com/dhr/domain/CategorySecond.hbm.xml</value>
+				<value>com/dhr/domain/Order.hbm.xml</value>
+				<value>com/dhr/domain/OrderItem.hbm.xml</value>
+				<value>com/dhr/domain/Admin.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 事务管理 -->
+		<!-- 事务管理器 -->
+		<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		<!--开启注解事务 -->
+		<tx:annotation-driven transaction-manager="transactionManager"/>
+		
+		
+	<!-- dao层 -->
+		<!-- user -->
+		<bean id="userDao" class="com.dhr.dao.impl.UserDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		<!-- category -->
+		<bean id="CategoryDao" class="com.dhr.dao.impl.CategoryDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		<!-- product -->
+		<bean id="ProductDao" class="com.dhr.dao.impl.ProductDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		<!-- order -->
+		<bean id="OrderDao" class="com.dhr.dao.impl.OrderDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		<!-- admin -->
+		<bean id="adminDao" class="com.dhr.dao.impl.AdminDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		<!-- categorySecond -->
+		<bean id="categorySecondDao" class="com.dhr.dao.impl.CategorySecondDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+	<!-- service层 -->
+		<!-- user -->
+		<bean id="userService" class="com.dhr.service.impl.UserServiceImpl">
+			<property name="userDao" ref="userDao"/>
+		</bean>
+		<!-- category -->
+		<bean id="CategoryService" class="com.dhr.service.impl.CategoryServiceImpl">
+			<property name="CategoryDao" ref="CategoryDao"/>
+		</bean>
+		<!-- product -->
+		<bean id="ProductService" class="com.dhr.service.impl.ProductServiceImpl">
+			<property name="ProductDao" ref="ProductDao"/>
+		</bean>
+		<!-- order -->
+		<bean id="OrderService" class="com.dhr.service.impl.OrderServiceImpl">
+			<property name="OrderDao" ref="OrderDao"/>
+		</bean>
+		<!-- admin -->
+		<bean id="adminService" class="com.dhr.service.impl.AdminServiceImpl">
+			<property name="adminDao" ref="adminDao"/>
+		</bean>
+		<!-- categorySecond -->
+		<bean id="categorySecondService" class="com.dhr.service.impl.CategorySecondServiceImpl">
+			<property name="categorySecondDao" ref="categorySecondDao"/>
+		</bean>
+	<!-- action层 -->
+		<!-- 首页action -->
+		<bean id="indexAction" class="com.dhr.action.IndexAction" scope="prototype">
+			<!-- 注入商品分类业务层 -->
+			<property name="CategoryService" ref="CategoryService"/>
+			<!-- 注入商品业务层 -->
+			<property name="ProductService" ref="ProductService"/>
+		</bean>
+		<!-- 用户action -->
+		<bean id="userAction" class="com.dhr.action.UserAction" scope="prototype">
+			<!-- 注入service -->
+			<property name="userService" ref="userService"/>
+		</bean>
+		<!-- 验证码action -->
+		<bean id="checkAction" class="com.dhr.action.CheckAction" scope="prototype"/>
+		<!-- 商品action -->
+		<bean id="productAction" class="com.dhr.action.ProductAction" scope="prototype">
+			<!-- 注入商品业务层 -->
+			<property name="ProductService" ref="ProductService"/>
+		</bean>
+		<!-- 配置购物车action -->
+		<bean id="cartAction" class="com.dhr.action.CartAction" scope="prototype">
+			<!-- 注入商品业务层 -->
+			<property name="ProductService" ref="ProductService"/>
+		</bean>
+		<!-- 配置订单action -->
+		<bean id="orderAction" class="com.dhr.action.OrderAction" scope="prototype">
+			<property name="OrderService" ref="OrderService"/>
+		</bean>
+		
+		
+		
+		
+		<!-- 配置管理员action -->
+		<bean id="adminAction" class="com.dhr.action.AdminAction" scope="prototype">
+			<property name="adminService" ref="adminService"/>
+		</bean>
+		<!-- 配置管理员管理一级分类action -->
+		<bean id="adminCategoryAction" class="com.dhr.action.AdminCategoryAction">
+			<property name="CategoryService" ref="CategoryService"/>
+		</bean>
+		<!--配置管理员管理二级分类action -->
+		<bean id="adminCategorySecondAction" class="com.dhr.action.AdminCategorySecondAction" scope="prototype">
+			<!-- 注入二级分类service -->
+			<property name="categorySecondService" ref="categorySecondService"/>
+			<!-- 注入一级分类service -->
+			<property name="CategoryService" ref="CategoryService"/>
+		</bean>
+		<!-- 配置管理员管理商品 action-->
+		<bean id="adminProductAction" class="com.dhr.action.AdminProductAction">
+			<!-- 注入商品业务层 -->
+			<property name="ProductService" ref="ProductService"/>
+			<!-- 注入二级分类service -->
+			<property name="categorySecondService" ref="categorySecondService"/>
+		</bean>
+		<!-- 配置管理员订单模块 action-->
+		<bean id="adminOrderAction" class="com.dhr.action.AdminOrderAction">
+			<!-- 注入订单service -->
+			<property name="OrderService" ref="OrderService"/>
+		</bean>
+</beans>

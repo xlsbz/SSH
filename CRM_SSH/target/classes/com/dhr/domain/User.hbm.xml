@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- 配置映射 -->
+<hibernate-mapping>
+	<class name="com.dhr.domain.User" table="sys_user">
+		<!-- 配置主键生成策略 -->
+		<id column="user_id" name="user_id">
+			<generator class="native"/>
+		</id>
+		<!-- 配置其他字段映射 -->
+		<property name="user_code"/>
+		<property name="user_name"/>
+		<property name="user_password"/>
+		<property name="user_state"/>
+	</class>
+</hibernate-mapping>
+
+ 

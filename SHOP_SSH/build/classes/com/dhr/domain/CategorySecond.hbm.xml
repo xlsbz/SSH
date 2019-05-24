@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- 配置二级分类 -->
+<hibernate-mapping>
+	<class name="com.dhr.domain.CategorySecond" table="categorysecond">
+		<!-- 主键 -->
+		<id column="csid" name="csid">
+			<generator class="native"/>
+		</id>
+		
+		<property name="csname"/>
+		
+		<!-- 配置一级分类一方对象映射 -->
+		<many-to-one name="category"  class="com.dhr.domain.Category" column="cid"/>
+
+		<!-- 配置多的一方商品集合 -->
+		<set name="products" lazy="false" order-by="pid">
+			<key column="csid"/>
+			<one-to-many class="com.dhr.domain.Product"/>
+		</set>
+	</class>
+</hibernate-mapping>

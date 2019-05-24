@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 配置Struts2的常量 -->
+	<constant name="struts.action.extension" value="action"/>
+	
+	<package name="crm" extends="struts-default" namespace="/">
+		
+		<!-- 配置拦截器 -->
+		<interceptors>
+			<interceptor name="privileges" class="com.dhr.interceptor.PrivilegesInterceptor"/>
+		</interceptors>
+		
+		<!-- 配置全局跳转 -->
+		<global-results>
+			<result name="login">/login.jsp</result>
+		</global-results>
+		<!-- 配置Action -->
+		<action name="index" class="indexAction" method="index">
+			<result name="index">/index.jsp</result>
+		</action>
+		<!-- 用户action -->
+		<action name="user_*" class="userAction" method="{1}">
+			<result name="success" type="redirect">/login.jsp</result>
+			<result name="loginSuccess" type="redirectAction">index.action</result>
+			<result name="loginError">/login.jsp</result>
+			<interceptor-ref name="privileges">
+				<param name="excludeMethods">register,loginUser</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"/>
+		</action>
+		<!-- 客户action -->
+		<action name="customer_*" class="customerAction" method="{1}">
+			<result name="saveUI">/jsp/customer/add.jsp</result>
+			<result name="success" type="redirectAction">customer_findByPageCustomer.action</result>
+			<result name="customerPage">/jsp/customer/list.jsp</result>
+			<result name="toEdit">/jsp/customer/edit.jsp</result>
+			<result name="updateSuccess" type="redirectAction">customer_findByPageCustomer.action</result>
+			<result name="deleteSuccess" type="redirectAction">customer_findByPageCustomer.action</result>
+			<interceptor-ref name="privileges"/>
+			<!-- 配置文件上传拦截器 -->
+			<interceptor-ref name="defaultStack">
+				<param name="fileUpload.maximumSize">2097152</param>
+				<param name="fileUpload.allowedExtensions">.jpg,.png</param>
+			</interceptor-ref>
+		</action>
+		
+		<!-- 配置字典action -->
+		<action name="baseDict_*" class="baseDictAction" method="{1}">
+			<interceptor-ref name="privileges"/>
+			<interceptor-ref name="defaultStack"/>
+		</action>
+		<!-- 配置联系人的action -->
+		<action name="linkMan_*" class="linkManAction" method="{1}">
+			<result name="findAllLinkMan">/jsp/linkman/list.jsp</result>
+			<result name="toAddLinkMan">/jsp/linkman/add.jsp</result>
+			<result name="toEdit">/jsp/linkman/edit.jsp</result>
+			<result name="addSuccess" type="redirectAction">linkMan_findAllLinkMan.action</result>
+			<result name="updateSuccess" type="redirectAction">linkMan_findAllLinkMan.action</result>
+			<result name="deleteSuccess" type="redirectAction">linkMan_findAllLinkMan.action</result>
+			<interceptor-ref name="privileges"/>
+			<interceptor-ref name="defaultStack"/>
+		</action>
+		
+		<!-- 配置拜访action -->
+		<action name="saleVisit_*" class="saleVisitAction" method="{1}">
+			<result name="findAllSale">/jsp/salevisit/list.jsp</result>
+			<result name="toSave">/jsp/salevisit/add.jsp</result>
+			<result name="saveSuccess" type="redirectAction">saleVisit_findAllSale.action</result>
+			<result name="deleteSuccess" type="redirectAction">saleVisit_findAllSale.action</result>
+			<interceptor-ref name="privileges"/>
+			<interceptor-ref name="defaultStack"/>
+		</action>
+	</package>
+</struts>

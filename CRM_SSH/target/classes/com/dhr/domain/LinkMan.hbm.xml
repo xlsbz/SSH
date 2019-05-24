@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<!-- 配置联系人映射 -->
+ <hibernate-mapping>
+ 	<class name="com.dhr.domain.LinkMan" table="cst_linkman">
+ 		<id name="lkm_id">
+ 			<generator class="native"/>
+ 		</id>
+ 		<property column="lkm_name" name="lkm_name"/>
+		<property name="lkm_gender"/>	
+		<property name="lkm_phone"/>	
+		<property name="lkm_mobile"/>	
+		<property name="lkm_email"/>	
+		<property name="lkm_qq"/>	
+		<property name="lkm_position"/>	
+		<property name="lkm_memovar"/>	
+ 	<!-- 配置一的一方客户对象 -->
+	<many-to-one name="customer" column="lkm_cust_id" class="com.dhr.domain.Customer"></many-to-one>
+ 	</class>
+ 	
+ </hibernate-mapping>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+<!-- 配置web层 -->	
+	
+	<bean id="indexAction" class="com.dhr.action.IndexAction" scope="prototype"/>
+	
+	<!-- 配置useraction -->
+	<bean id="userAction" class="com.dhr.action.UserAction" scope="prototype">
+		<!-- 注入service -->
+		<property name="userService" ref="userService"/>
+	</bean>
+	
+	<!-- 配置customeraction -->
+	<bean id="customerAction" class="com.dhr.action.CustomerAction" scope="prototype">
+		<property name="customerService" ref="customerService"/>
+	</bean>
+	
+	<!-- 配置字典action -->
+	<bean id="baseDictAction" class="com.dhr.action.BaseDictAction" scope="prototype">
+		<property name="baseDictService" ref="baseDictService"/>
+	</bean>
+	
+	<!-- 创建联系人action -->
+	<bean id="linkManAction" class="com.dhr.action.LinkManAction" scope="prototype">
+		<property name="linkManService" ref="linkManService"/>
+	</bean>
+	
+	<!-- 创建拜访记录action -->
+	<bean id="saleVisitAction" class="com.dhr.action.SaleVisitAction" scope="prototype">
+		<property name="saleVisitService" ref="saleVisitService"/>
+	</bean>
+</beans>
